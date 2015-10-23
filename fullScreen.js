@@ -14,7 +14,10 @@
         debug  : false,
 
         //reset body height when window resize
-        resize : true
+        resize : true,
+
+        //the elements which fixed height
+        fixed  : []
     };
 
     this.init = function (opts) {
@@ -34,23 +37,21 @@
         return this;
     };
 
-    this.header = function (selector) {
-        config.header = selector;
+    this.body = function (ele) {
+        config.body = ele;
         return this;
     };
 
-    this.body = function (selector) {
-        config.body = selector;
-        return this;
-    };
-
-    this.footer = function (selecter) {
-        config.footer = selecter;
+    this.fixed = function (elements) {
+        if (Array.isArray(elements)) {
+            config.fixed = config.fixed.concat(elements);
+        } else if (elements.toString()) {
+            config.fixed.push(elements);
+        }
         return this;
     };
 
     this.render = function () {
-        _log(config);
         if (!config.body) {
             throw new Error('you does`t set body element`s selector,please use method `body()` to set.');
         }
@@ -93,36 +94,34 @@
     this.getHeight = function (ele) {
         var mt = this.getMargin(ele, 'top');
         var mb = this.getMargin(ele, 'bottom');
-        var bt = this.getBorder(ele, 'top');
-        var bb = this.getBorder(ele, 'bottom');
-        return ele.offsetHeight + mt + mb + bt + bb;
+        return ele.offsetHeight + mt + mb;
     };
 
     this.getBrowserHeight = function () {
         return window.innerHeight;
     };
 
+    this.computeFixedHeight = function () {
+        var h = 0;
+        if (config.fixed) {
+            for (var key in config.fixed) {
+                var selector = config.fixed[key];
+                h += this.getHeight(this.getEle(selector));
+            }
+        }
+        return h;
+    };
+
     this.computeBodyHeight = function () {
-        var header = 0;
-        var footer = 0;
-        if (config.header) {
-            header = this.getHeight(this.getEle(config.header));
-        }
-        if (config.footer) {
-            footer = this.getHeight(this.getEle(config.footer));
-        }
         var BrowserHeight = this.getBrowserHeight();
-        _log('browser inner height:' + BrowserHeight);
-        _log('header height:' + header);
-        _log('footer height:' + footer);
-        return BrowserHeight - header - footer;
+        var fixedHeight = this.computeFixedHeight();
+        return BrowserHeight - fixedHeight;
     };
 
     this.setBodyHeight = function () {
         var body = this.getEle(config.body);
         var bodyHeight = this.computeBodyHeight();
         body.style.minHeight = bodyHeight + 'px';
-        _log('set body min height:' + bodyHeight);
     };
 
     this.onResize = function() {
@@ -130,16 +129,6 @@
             this.setBodyHeight();
         }
     };
-
-    function _log(msg) {
-        if (config.debug) {
-            try {
-                console.log(msg);
-            } catch (error) {
-                throw error;
-            }
-        }
-    }
 
     window.onresize = this.onResize;
 

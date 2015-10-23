@@ -8,19 +8,17 @@ lightweight and no dependencies js library let the web page automatically full-s
     <script src="/path/to/fullScreen.js"></script>
     <script>
         //simple usage
-        fullScreen.header('#header')
-                  .body('#body')
-                  .footer('#footer')
-                  .render();
+        fullScreen.body('#body').fixed('#header').fixed('#footer').render();
+        //or
+        fullScreen.body('#body').fixed([
+            '#header',
+            '#footer'
+        ]).render();
         //or
         fullScreen.init({
-            header : '#header',
+            fixed  : ['#header', '#footer']
             body   : '#body',
-            footer : '#footer'
         }).render();
-
-        //enable debug
-        fullScreen.debug(true);
 
         //auto reset body height when window resize
         fullScreen.resize(true);
