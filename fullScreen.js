@@ -10,9 +10,6 @@
     * default config
     */
     var config = {
-        //print log
-        debug  : false,
-
         //reset body height when window resize
         resize : true,
 
@@ -24,11 +21,6 @@
         for (var key in opts) {
             config[key] = opts[key];
         }
-        return this;
-    };
-
-    this.debug = function (enable) {
-        config.debug = enable;
         return this;
     };
 

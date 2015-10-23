@@ -7,6 +7,7 @@ lightweight and no dependencies js library let the web page automatically full-s
 ```html
     <script src="/path/to/fullScreen.js"></script>
     <script>
+        //let elements `#body` automatic covered
         //simple usage
         fullScreen.body('#body').fixed('#header').fixed('#footer').render();
         //or
@@ -24,3 +25,21 @@ lightweight and no dependencies js library let the web page automatically full-s
         fullScreen.resize(true);
     </script>
 ```
+
+#Method
+
+### body(elementSelector)
+
+The element of need to automatically covered
+
+### fixed(elementsSelector)
+
+the elements which fixed height
+
+### resize(enable)
+
+is reset body height when window resize
+
+### render()
+
+begin to render
