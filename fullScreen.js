@@ -69,7 +69,7 @@
                 type == 'bottom' ?
                 style.marginBottom : 0
             );
-        return parseInt(marginStyle);
+        return parseInt('0' + marginStyle);
     };
 
     this.getBorder = function (ele, type) {
@@ -80,7 +80,7 @@
                 type == 'bottom' ?
                 style.borderBottomWidth : 0
             );
-        return parseInt(borderWidthStyle);
+        return parseInt('0' + borderWidthStyle);
     };
 
     this.getHeight = function (ele) {
