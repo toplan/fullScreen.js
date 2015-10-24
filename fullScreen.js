@@ -124,5 +124,5 @@
 
     window.onresize = this.onResize;
 
-    window.fullScreen= window.fullscreen = this;
-})();
+    window.fullScreen = window.fullscreen = this;
+})(window);
