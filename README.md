@@ -9,20 +9,20 @@ lightweight and no dependencies js library let the web page automatically full-s
     <script>
         //let elements `#body` automatic covered
         //simple usage
-        fullScreen.body('#body').fixed('#header').fixed('#footer').render();
+        full.body('#body').fixed('#header').fixed('#footer').render();
         //or
-        fullScreen.body('#body').fixed([
+        full.body('#body').fixed([
             '#header',
             '#footer'
         ]).render();
         //or
-        fullScreen.init({
+        full.init({
             fixed  : ['#header', '#footer']
             body   : '#body',
         }).render();
 
         //auto reset body height when window resize
-        fullScreen.resize(true);
+        full.resize(true);
     </script>
 ```
 
