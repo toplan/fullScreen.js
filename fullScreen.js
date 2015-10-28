@@ -152,5 +152,5 @@
         }
     };
 
-    window.fullScreen = fullScreen;
+    window.full = fullScreen;
 })(window);

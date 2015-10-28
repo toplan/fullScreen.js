@@ -11,20 +11,20 @@ lightweight and no dependencies js library let the web page automatically full-s
     <script>
         // #body1 min height(px) =
         // [browser inner height] - [`#header` height] - [`#footer` height]
-        new fullScreen('#body1').fixed('#header').fixed('#footer').render()
+        new full('#body1').fixed('#header').fixed('#footer').render()
 
         // #body2 min height(px) =
         // [browser inner height] - [`#header` height] - [`#footer` height] - 20
-        new fullScreen('#body2').fixed(['#header', '#footer']).minus(20).render()
+        new full('#body2').fixed(['#header', '#footer']).minus(20).render()
 
         //#body2 min height(px) =
         // [browser inner height] - [`#header` height] - [`#footer` height] + 20
-        new fullScreen('#body2').fixed(['#header', '#footer']).plus(20).render()
+        new full('#body2').fixed(['#header', '#footer']).plus(20).render()
     </script>
 
     //example 2:
     <script>
-        var full = new fullScreen();
+        var full = new full();
         full.body('#body').fixed('#header').fixed('#footer').render();
         //or
         full.body('#body').fixed([
