@@ -152,7 +152,5 @@
         }
     };
 
-    window.full = window.fs = function (body, opts) {
-        return new fullScreen(body, opts);
-    };
+    window.fullScreen = fullScreen;
 })(window);
