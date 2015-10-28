@@ -41,7 +41,7 @@
         return this;
     };
 
-    fullScreen.prototype.body = function (ele) {
+    fullScreen.prototype.control = function (ele) {
         if (this.getEle(ele)) {
             this.config.body = ele;
         }
@@ -49,7 +49,7 @@
     };
 
     fullScreen.prototype.fixed = function (elements) {
-        if (Array.isArray(elements)) {
+        if (Array.isArray(elements) || elements instanceof Array) {
             this.config.fixed = this.config.fixed.concat(elements);
         } else if (elements.toString()) {
             this.config.fixed.push(elements);
@@ -136,12 +136,14 @@
     };
 
     fullScreen.prototype.plus = function (num) {
-        this.config.plus = parseFloat(num);
+        num = parseFloat(num);
+        this.config.plus = isNaN(num) ? 0 : num;
         return this;
     };
 
     fullScreen.prototype.minus = function (num) {
-        this.config.minus = parseFloat(num);
+        num = parseFloat(num);
+        this.config.minus = isNaN(num) ? 0 : num;
         return this;
     };
 
@@ -152,5 +154,7 @@
         }
     };
 
-    window.full = fullScreen;
+    window.full = function (body, opts) {
+        return new fullScreen(body, opts);
+    };
 })(window);

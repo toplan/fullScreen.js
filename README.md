@@ -7,59 +7,53 @@ lightweight and no dependencies js library let the web page automatically full-s
 ```html
     <script src="/path/to/fullScreen.js"></script>
 
-    //example 1:
     <script>
-        // #body1 min height(px) =
+        // example 1:
+        //
+        // '#body1' min height(px) =
         // [browser inner height] - [`#header` height] - [`#footer` height]
-        new full('#body1').fixed('#header').fixed('#footer').render()
+        //
+        full('#body1').fixed('#header').fixed('#footer').render();
 
-        // #body2 min height(px) =
-        // [browser inner height] - [`#header` height] - [`#footer` height] - 20
-        new full('#body2').fixed(['#header', '#footer']).minus(20).render()
-
-        //#body2 min height(px) =
+        // example 2:
+        //
+        // '#body2' min height(px) =
         // [browser inner height] - [`#header` height] - [`#footer` height] + 20
-        new full('#body2').fixed(['#header', '#footer']).plus(20).render()
-    </script>
+        //
+        var fullBody2 = full('#body2');
+        fullBody2.fixed(['#header', '#footer']).plus(20).render();
 
-    //example 2:
-    <script>
-        var full = new full();
-        full.body('#body').fixed('#header').fixed('#footer').render();
-        //or
-        full.body('#body').fixed([
-            '#header',
-            '#footer'
-        ]).render();
-        //or
-        full.init({
-            fixed  : ['#header', '#footer']
-            body   : '#body',
-        }).render();
+        // more:
+        fullBody2.autoResize(false);
+        fullBody2.resize();
     </script>
 ```
 
 # Method
 
-### body(elementSelector)
+### full(controlEle, opts);
 
-The element of need to automatically covered
+create a fullScreen.js instance, return instance
+
+### control(elementSelector)
+
+The element of need to automatically covered, return instance
 
 ### fixed(elementsSelector)
 
-the elements which fixed height
+the elements which fixed height, return instance
 
 ### autoResize(enable)
 
-is reset body min height when window resize
+is reset body min height when window resize, return instance
 
 ### render()
 
-begin to render
+begin to render, return true or false
 
 ### resize()
 
-manual reset body min height
+manual reset body min height, return instance
 
 ### plus(number)
 
