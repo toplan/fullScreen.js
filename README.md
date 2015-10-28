@@ -6,9 +6,25 @@ lightweight and no dependencies js library let the web page automatically full-s
 
 ```html
     <script src="/path/to/fullScreen.js"></script>
+
+    //example 1:
     <script>
-        //let elements `#body` automatic covered
-        //simple usage
+        //
+        //body1`s min height(px) = [browser inner height] - [`#header` height] - [`#footer` height]
+        new full('#body1').fixed('#header').fixed('#footer').render()
+
+        //
+        //body2`s min height(px) = [browser inner height] - [`#header` height] - [`#footer` height] - 20
+        new full('#body2').fixed(['#header', '#footer']).minus(20).render()
+
+        //
+        //body2`s min height(px) = [browser inner height] - [`#header` height] - [`#footer` height] + 20
+        new full('#body2').fixed(['#header', '#footer']).plus(20).render()
+    </script>
+
+    //example 2:
+    <script>
+        var full = new full();
         full.body('#body').fixed('#header').fixed('#footer').render();
         //or
         full.body('#body').fixed([
@@ -20,13 +36,10 @@ lightweight and no dependencies js library let the web page automatically full-s
             fixed  : ['#header', '#footer']
             body   : '#body',
         }).render();
-
-        //auto reset body height when window resize
-        full.resize(true);
     </script>
 ```
 
-#Method
+#More
 
 ### body(elementSelector)
 
@@ -36,10 +49,18 @@ The element of need to automatically covered
 
 the elements which fixed height
 
-### resize(enable)
+### autoResize(enable)
 
-is reset body height when window resize
+is reset body min height when window resize
 
 ### render()
 
 begin to render
+
+### resize()
+
+manual reset body min height
+
+### plus(number)
+
+### minus(number)

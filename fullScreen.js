@@ -6,129 +6,153 @@
 
 (function (window) {
 
-    function fullScreen(window) {
-       /*
-        * default config
-        */
-        var config = {
-            //reset body height when window resize
-            resize : true,
+    var instances = [];
+
+    function fullScreen(body, opts) {
+        this.config = {
+            //the element which auto compute min height
+            body   : body,
 
             //the elements which fixed height
-            fixed  : []
+            fixed  : [],
+
+            //is reset body height when window resize
+            resize : true,
+
+            //plus to body min height
+            plus   : 0,
+
+            //minus from body min height
+            minus  : 0
         };
 
-        this.init = function (opts) {
-            for (var key in opts) {
-                config[key] = opts[key];
-            }
-            return this;
-        };
-
-        this.resize = function (enable) {
-            config.resize = enable;
-            return this;
-        };
-
-        this.body = function (ele) {
-            config.body = ele;
-            return this;
-        };
-
-        this.fixed = function (elements) {
-            if (Array.isArray(elements)) {
-                config.fixed = config.fixed.concat(elements);
-            } else if (elements.toString()) {
-                config.fixed.push(elements);
-            }
-            return this;
-        };
-
-        this.render = function () {
-            if (!config.body) {
-                throw new Error('you does`t set body element`s selector,please use method `body()` to set.');
-            }
-            this.setBodyHeight();
-        };
-
-        this.getEle = function (selector, getAll) {
-            if (getAll) {
-                return document.querySelectorAll(selector);
-            }
-            return document.querySelector(selector);
-        };
-
-        this.getStyle = function (ele) {
-            return ele.currentStyle || window.getComputedStyle(ele);
-        };
-
-        this.getMargin = function (ele, type) {
-            var style = this.getStyle(ele);
-            var marginStyle = type == 'top' ?
-                style.marginTop:
-                (
-                    type == 'bottom' ?
-                    style.marginBottom : 0
-                );
-            return parseInt('0' + marginStyle);
-        };
-
-        this.getBorder = function (ele, type) {
-            var style = this.getStyle(ele);
-            var borderWidthStyle = type == 'top' ?
-                style.borderTopWidth :
-                (
-                    type == 'bottom' ?
-                    style.borderBottomWidth : 0
-                );
-            return parseInt('0' + borderWidthStyle);
-        };
-
-        this.getHeight = function (ele) {
-            var mt = this.getMargin(ele, 'top');
-            var mb = this.getMargin(ele, 'bottom');
-            return ele.offsetHeight + mt + mb;
-        };
-
-        this.getBrowserHeight = function () {
-            return window.innerHeight;
-        };
-
-        this.computeFixedHeight = function () {
-            var h = 0;
-            if (config.fixed) {
-                for (var key in config.fixed) {
-                    var selector = config.fixed[key];
-                    h += this.getHeight(this.getEle(selector));
-                }
-            }
-            return h;
-        };
-
-        this.computeBodyHeight = function () {
-            var BrowserHeight = this.getBrowserHeight();
-            var fixedHeight = this.computeFixedHeight();
-            return BrowserHeight - fixedHeight;
-        };
-
-        this.setBodyHeight = function () {
-            var body = this.getEle(config.body);
-            var bodyHeight = this.computeBodyHeight();
-            body.style.minHeight = bodyHeight + 'px';
-        };
-
-        this.onResize = function() {
-            if (config.resize) {
-                this.setBodyHeight();
-            }
-        };
+        this.init(opts);
     }
 
-    var fs = new fullScreen(window);
-
-    window.onresize = function () {
-        fs.onResize();
+    fullScreen.prototype.init = function (opts) {
+        for (var key in opts) {
+            this.config[key] = opts[key];
+        }
+        return this;
     };
 
-    window.full = window.fs = fs;
+    fullScreen.prototype.autoResize = function (enable) {
+        this.config.resize = enable;
+        return this;
+    };
+
+    fullScreen.prototype.body = function (ele) {
+        if (this.getEle(ele)) {
+            this.config.body = ele;
+        }
+        return this;
+    };
+
+    fullScreen.prototype.fixed = function (elements) {
+        if (Array.isArray(elements)) {
+            this.config.fixed = this.config.fixed.concat(elements);
+        } else if (elements.toString()) {
+            this.config.fixed.push(elements);
+        }
+        return this;
+    };
+
+    fullScreen.prototype.render = function () {
+        if (this.getEle(this.config.body)) {
+            this.setBodyHeight();
+            instances.push(this);
+            return true;
+        }
+        return false;
+    };
+
+    fullScreen.prototype.getEle = function (selector, getAll) {
+        return getAll ? document.querySelectorAll(selector) :
+                        document.querySelector(selector);
+    };
+
+    fullScreen.prototype.getStyle = function (ele) {
+        if (ele) {
+            return ele.currentStyle || window.getComputedStyle(ele);
+        }
+        return undefined;
+    };
+
+    fullScreen.prototype.getMargin = function (ele, type) {
+        var style = this.getStyle(ele);
+        if (!style) {
+            return 0;
+        }
+        var marginStyle = type == 'top' ?
+            style.marginTop:
+            (
+                type == 'bottom' ?
+                style.marginBottom : 0
+            );
+        return parseInt('0' + marginStyle);
+    };
+
+    fullScreen.prototype.getHeight = function (ele) {
+        var mt = this.getMargin(ele, 'top');
+        var mb = this.getMargin(ele, 'bottom');
+        return (ele ? ele.offsetHeight : 0) + mt + mb;
+    };
+
+    fullScreen.prototype.getBrowserHeight = function () {
+        return window.innerHeight;
+    };
+
+    fullScreen.prototype.computeFixedHeight = function () {
+        var h = 0;
+        if (this.config.fixed) {
+            for (var key in this.config.fixed) {
+                var selector = this.config.fixed[key];
+                h += this.getHeight(this.getEle(selector));
+            }
+        }
+        return h;
+    };
+
+    fullScreen.prototype.computeBodyHeight = function () {
+        var BrowserHeight = this.getBrowserHeight();
+        var fixedHeight = this.computeFixedHeight();
+        return BrowserHeight - fixedHeight + this.config.plus - this.config.minus;
+    };
+
+    fullScreen.prototype.setBodyHeight = function () {
+        var body = this.getEle(this.config.body);
+        var bodyHeight = this.computeBodyHeight();
+        body.style.minHeight = bodyHeight + 'px';
+    };
+
+    fullScreen.prototype.onResize = function() {
+        if (this.config.resize) {
+            this.resize();
+        }
+    };
+
+    fullScreen.prototype.resize = function() {
+        this.setBodyHeight();
+    };
+
+    fullScreen.prototype.plus = function (num) {
+        this.config.plus = parseFloat(num);
+        return this;
+    };
+
+    fullScreen.prototype.minus = function (num) {
+        this.config.minus = parseFloat(num);
+        return this;
+    };
+
+    window.onresize = function () {
+        for (var key in instances) {
+            var fs = instances[key];
+            fs.onResize();
+        }
+    };
+
+    window.full = window.fs = function (body, opts) {
+        return new fullScreen(body, opts);
+    };
 })(window);
