@@ -4,7 +4,7 @@
  * https://github.com/toplan/fullScreen.js
  */
 
-(function (window) {
+(function () {
 
     var instances = [];
 
@@ -42,9 +42,7 @@
     };
 
     fullScreen.prototype.control = function (ele) {
-        if (this.getEle(ele)) {
-            this.config.body = ele;
-        }
+        this.config.body = ele;
         return this;
     };
 
@@ -58,12 +56,8 @@
     };
 
     fullScreen.prototype.render = function () {
-        if (this.getEle(this.config.body)) {
-            this.setBodyHeight();
-            instances.push(this);
-            return true;
-        }
-        return false;
+        this.resize();
+        return this;
     };
 
     fullScreen.prototype.getEle = function (selector, getAll) {
@@ -127,12 +121,17 @@
 
     fullScreen.prototype.onResize = function() {
         if (this.config.resize) {
-            this.resize();
+            return this.resize();
         }
+        return false;
     };
 
     fullScreen.prototype.resize = function() {
-        this.setBodyHeight();
+        if (this.getEle(this.config.body)) {
+            this.setBodyHeight();
+            return true;
+        }
+        return false;
     };
 
     fullScreen.prototype.plus = function (num) {
@@ -150,11 +149,20 @@
     window.onresize = function () {
         for (var key in instances) {
             var fs = instances[key];
-            fs.onResize();
+            try {
+                fs.onResize();
+            } catch(e) {
+            }
         }
     };
 
     window.full = function (body, opts) {
-        return new fullScreen(body, opts);
+        var fs = new fullScreen(body, opts);
+        instances.push(fs);
+        return  fs;
     };
-})(window);
+
+    window.full.instances = function () {
+        return instances;
+    };
+})();
