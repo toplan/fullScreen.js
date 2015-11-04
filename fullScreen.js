@@ -56,8 +56,11 @@
     };
 
     fullScreen.prototype.render = function () {
-        this.resize();
-        return this;
+        if (this.getBody()) {
+            this.setBodyHeight();
+            return true;
+        }
+        return false;
     };
 
     fullScreen.prototype.getEle = function (selector, getAll) {
@@ -107,14 +110,27 @@
         return h;
     };
 
+    fullScreen.prototype.getBody = function () {
+        return this.getEle(this.config.body);
+    };
+
+    fullScreen.prototype.computeBodyMargin = function () {
+        var body = this.getBody();
+        var mt = this.getMargin(body, 'top');
+        var mb = this.getMargin(body, 'bottom');
+        return mt + mb;
+    };
+
     fullScreen.prototype.computeBodyHeight = function () {
         var BrowserHeight = this.getBrowserHeight();
         var fixedHeight = this.computeFixedHeight();
-        return BrowserHeight - fixedHeight + this.config.plus - this.config.minus;
+        var bodyMargin = this.computeBodyMargin();
+        return BrowserHeight - fixedHeight - bodyMargin
+               + this.config.plus - this.config.minus;
     };
 
     fullScreen.prototype.setBodyHeight = function () {
-        var body = this.getEle(this.config.body);
+        var body = this.getBody();
         var bodyHeight = this.computeBodyHeight();
         body.style.minHeight = bodyHeight + 'px';
     };
@@ -127,11 +143,7 @@
     };
 
     fullScreen.prototype.resize = function() {
-        if (this.getEle(this.config.body)) {
-            this.setBodyHeight();
-            return true;
-        }
-        return false;
+        return this.render();
     };
 
     fullScreen.prototype.plus = function (num) {
@@ -147,12 +159,13 @@
     };
 
     window.onresize = function () {
-        for (var key in instances) {
-            var fs = instances[key];
-            try {
+        try {
+            for (var key in instances) {
+                var fs = instances[key];
                 fs.onResize();
-            } catch(e) {
             }
+        } catch(e) {
+            throw e;
         }
     };
 

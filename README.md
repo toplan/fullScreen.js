@@ -13,6 +13,7 @@ lightweight and no dependencies js library let the web page automatically full-s
         // '#body1' min height(px) =
         // [browser inner height] - [`#header` height] - [`#footer` height]
         //
+
         full('#body1').fixed('#header').fixed('#footer').render();
 
         // example 2:
@@ -20,6 +21,7 @@ lightweight and no dependencies js library let the web page automatically full-s
         // '#body2' min height(px) =
         // [browser inner height] - [`#header` height] - [`#footer` height] + 20
         //
+
         var fullBody2 = full('#body2');
         fullBody2.fixed(['#header', '#footer']).plus(20).render();
 
@@ -53,7 +55,7 @@ begin to render, return true or false
 
 ### resize()
 
-manual reset body min height, return instance
+manual reset body min height, return true or false
 
 ### plus(number)
 
